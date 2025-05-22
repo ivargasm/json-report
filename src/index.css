@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-bg: #fcfcfc;
+    --color-bg-dark: #20252c;
+    --color-text: #202225;
+    --color-text-dark: #fcfcfc;
+
+    --color-primary: #0088cc;
+    /* Azul */
+    --color-primary-dark: #73cffa;
+
+    --color-secondary: #10b981;
+    /* Verde */
+    --color-secondary-dark: #34d399;
+
+    --color-accent: #e7562e;
+    /* Amarillo */
+    --color-accent-dark: #e7762e;
+
+    --color-btn: #0099ff;
+    --color-btn-dark: #0087ff;
+
+    --color-light-contrast: #f7f7f7;
+    --color-dark-contrast: #202b38;
+
+    /* colores para los checkbox */
+    --color-dark-check: #35485e;
+    --color-light-check: #efece6;
+
+    --gradient-primary: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    --gradient-link: linear-gradient(45deg, var(--color-dark-link), var(--color-light-link));
+}
+
+@layer components {
+    .input {
+        @apply w-full px-4 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium transition;
+    }
+
+    .btn-primary {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+}
