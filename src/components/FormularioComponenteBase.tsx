@@ -24,7 +24,8 @@ export default function FormularioComponenteBase() {
         if (!form.datasource || !form.type) return
 
         try {
-            const res = await fetch('http://127.0.0.1:8000/columns/parse-columns', {
+            // const res = await fetch('http://127.0.0.1:8000/columns/parse-columns', {
+            const res = await fetch('https://json-report-backend.onrender.com/columns/parse-columns', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
