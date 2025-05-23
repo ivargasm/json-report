@@ -55,7 +55,7 @@ export default function DefaultFilterProperties() {
                       value: e.target.value,
                     })
                   }
-                  className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full text-white"
+                  className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
                   placeholder="Ej: -1"
                 />
               </div>
@@ -71,7 +71,7 @@ export default function DefaultFilterProperties() {
                       description: e.target.value,
                     })
                   }
-                  className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full text-white"
+                  className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
                   placeholder="Ej: Todos los productos"
                 />
               </div>

@@ -72,7 +72,7 @@ export default function GenericFiltersForm() {
                 onChange={(e) =>
                   updateGenericFilter({ ...item, schema: e.target.value as any })
                 }
-                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full text-white"
+                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
               >
                 {schemaOptions.map((schema) => (
                   <option key={schema} value={schema}>
@@ -90,7 +90,7 @@ export default function GenericFiltersForm() {
                 onChange={(e) =>
                   updateGenericFilter({ ...item, datasource: e.target.value })
                 }
-                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full text-white"
+                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
                 rows={4}
                 placeholder="Escribe el query principal..."
               />
@@ -104,7 +104,7 @@ export default function GenericFiltersForm() {
                 onChange={(e) =>
                   updateGenericFilter({ ...item, count_datasource: e.target.value })
                 }
-                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full text-white"
+                className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
                 rows={3}
                 placeholder="Escribe el query de conteo..."
               />

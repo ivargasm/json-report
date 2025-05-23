@@ -4,6 +4,7 @@ import ReporteConfigPage from './components/ReporteConfigPage'
 import HomePage from './components/HomePage'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Navbar from './components/Navbar'
+import { Analytics } from "@vercel/analytics/react"
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -12,5 +13,6 @@ createRoot(document.getElementById('root')).render(
       <Route path="/" element={<HomePage />} />
       <Route path="/configurar-reporte" element={<ReporteConfigPage />} />
     </Routes>
+    <Analytics />
   </BrowserRouter>
 )
