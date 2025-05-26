@@ -110,12 +110,13 @@ export default function ComponentResumeConfigurator() {
                 <div
                   key={col.column}
                   onClick={() => toggleColumnInRow(rowIdx, col.column)}
-                  className={`cursor-pointer px-3 py-2 rounded text-sm text-center font-medium transition border
+                  className={`cursor-pointer px-2 py-1.5 rounded text-md text-center font-medium transition border whitespace-nowrap overflow-hidden text-ellipsis
                     ${
                       sel
                         ? 'bg-blue-600 border-blue-400 text-white'
                         : 'bg-[#33334d] border-gray-600 hover:bg-[#3e3e5e]'
                     }`}
+                  title={col.column}
                 >
                   {col.column}
                 </div>
