@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useComponentsStore } from '../store/componentsStore'
 
 export default function FormularioComponenteBase() {
-    const { table, resume, setComponent, setParsedColumns } = useComponentsStore()
+    const { table, resume, setComponent, setParsedColumns, clearTable, clearResume } = useComponentsStore()
     const [form, setForm] = useState({
         id: '',
         title: '',
@@ -14,6 +14,33 @@ export default function FormularioComponenteBase() {
         column_titles: '',
     })
 
+    // 🧠 Cargar el componente actual al seleccionar tipo
+    useEffect(() => {
+        if (form.type === 'resume' && resume) {
+        setForm({
+            id: resume.id,
+            title: resume.title,
+            type: resume.type,
+            schema: resume.schema,
+            datasource: resume.datasource,
+            last_date_datasource: resume.last_date_datasource || '',
+            count_datasource: '',
+            column_titles: resume.column_titles?.join(', ') || '',
+        })
+        } else if (form.type === 'table' && table) {
+        setForm({
+            id: table.id,
+            title: table.title,
+            type: table.type,
+            schema: table.schema,
+            datasource: table.datasource,
+            count_datasource: table.count_datasource || '',
+            last_date_datasource: '',
+            column_titles: '',
+        })
+        }
+    }, [form.type, table, resume])
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
@@ -24,8 +51,8 @@ export default function FormularioComponenteBase() {
         if (!form.datasource || !form.type) return
 
         try {
-            // const res = await fetch('http://127.0.0.1:8000/columns/parse-columns', {
-            const res = await fetch('https://json-report-backend.onrender.com/columns/parse-columns', {
+            const res = await fetch('http://127.0.0.1:8000/columns/parse-columns', {
+            // const res = await fetch('https://json-report-backend.onrender.com/columns/parse-columns', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -91,6 +118,36 @@ export default function FormularioComponenteBase() {
         alert(`Componente "${form.type}" agregado.`)
     }
 
+    const handleUpdate = () => {
+        const baseProps = {
+          id: form.id,
+          type: form.type as 'resume' | 'table',
+          title: form.title,
+          schema: form.schema as 'project' | 'stoiii' | 'stoiii_config',
+          datasource: form.datasource,
+          parsedColumns: [],
+        }
+      
+        const component =
+          form.type === 'resume'
+            ? {
+                ...baseProps,
+                last_date_datasource: form.last_date_datasource || '',
+                column_titles: form.column_titles
+                  ? form.column_titles.split(',').map((t) => t.trim())
+                  : [],
+                rows: resume?.rows ?? [],
+              }
+            : {
+                ...baseProps,
+                count_datasource: form.count_datasource || '',
+                columns: table?.columns ?? [],
+              }
+      
+        setComponent(component)
+        alert(`Componente "${form.type}" actualizado.`)
+      }
+
 
     const isResume = form.type === 'resume'
 
@@ -127,15 +184,17 @@ export default function FormularioComponenteBase() {
                         name="type"
                         value={form.type}
                         onChange={handleChange}
-                        className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
-                    >
-                        <option value="resume" disabled={!!resume}>
-                            Resumen
+                        className="bg-[#2b2b3d] border border-gray-600 p-2 rounded w-full"
+                        >
+                        <option value="resume">
+                            Resumen {resume ? '✅' : ''}
                         </option>
-                        <option value="table" disabled={!!table?.datasource}>
-                            Tabla
+                        <option value="table">
+                            Tabla {table?.datasource ? '✅' : ''}
                         </option>
+
                     </select>
+
                 </div>
 
                 <div>
@@ -202,12 +261,22 @@ export default function FormularioComponenteBase() {
             )}
 
             <div className="flex space-x-4 pt-4">
+            {(form.type === 'resume' && resume) ||
+                (form.type === 'table' && table?.datasource) ? (
+                <button
+                    onClick={handleUpdate}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
+                >
+                    Actualizar componente
+                </button>
+                ) : (
                 <button
                     onClick={handleAdd}
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
                 >
                     Agregar componente
                 </button>
+            )}
 
                 <button
                     onClick={handleParseColumns}
@@ -222,6 +291,27 @@ export default function FormularioComponenteBase() {
                 >
                     Obtener columnas
                 </button>
+
+                <button
+                    onClick={() => {
+                        if (form.type === 'resume') clearResume()
+                        else if (form.type === 'table') clearTable()
+                        setForm({
+                        id: '',
+                        title: '',
+                        type: 'resume',
+                        schema: 'project',
+                        datasource: '',
+                        count_datasource: '',
+                        last_date_datasource: '',
+                        column_titles: '',
+                        })
+                    }}
+                    className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded"
+                    >
+                    Limpiar formulario
+                </button>
+
 
             </div>
         </div>

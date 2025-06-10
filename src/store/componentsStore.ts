@@ -45,6 +45,8 @@ interface ComponentStore {
     setComponent: (comp: ReportComponent) => void
     setParsedColumns: (type: 'table' | 'resume', columns: ParsedColumn[]) => void
     reset: () => void
+    clearTable: () => void
+    clearResume: () => void
 }
 
 export const useComponentsStore = create<ComponentStore>((set) => ({
@@ -112,7 +114,26 @@ export const useComponentsStore = create<ComponentStore>((set) => ({
             parsedColumns: [],
         },
         resume: undefined,
-    }))
+    })),
+    
+    clearResume: () =>
+        set(() => ({
+            resume: undefined,
+        })),
+
+    clearTable: () =>
+        set(() => ({
+            table: {
+                id: '',
+                type: 'table',
+                title: '',
+                schema: 'project',
+                datasource: '',
+                count_datasource: '',
+                columns: [],
+                parsedColumns: [],
+            },
+        })),
 
 
 

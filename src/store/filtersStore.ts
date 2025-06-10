@@ -72,4 +72,11 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
         filters_properties: {},
     })),
 
+    clearFilters: () =>
+        set(() => ({
+          filters: [],
+          generic_filters: [],
+          filters_properties: {},
+        })),
+
 }))
