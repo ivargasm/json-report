@@ -1,18 +1,12 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import ReporteConfigPage from './components/ReporteConfigPage'
-import HomePage from './components/HomePage'
-import { BrowserRouter, Routes, Route } from 'react-router'
-import Navbar from './components/Navbar'
-import { Analytics } from "@vercel/analytics/react"
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+import { Analytics } from '@vercel/analytics/react';
 
-createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-    <Navbar />
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/configurar-reporte" element={<ReporteConfigPage />} />
-    </Routes>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
     <Analytics />
-  </BrowserRouter>
-)
+  </React.StrictMode>
+);

@@ -1,25 +1,24 @@
-import { Link, useLocation } from 'react-router'
-import { useEffect, useState } from 'react'
-import { Sun, Moon } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Sun, Moon } from 'lucide-react';
 
 export default function Navbar() {
-    const location = useLocation()
-    const [darkMode, setDarkMode] = useState(true)
+    const location = useLocation();
+    const [darkMode, setDarkMode] = useState(true);
 
-    // Cambia clases al <html> para aplicar modo dark/light
     useEffect(() => {
-        const html = document.documentElement
+        const html = document.documentElement;
         if (darkMode) {
-            html.classList.add('dark')
+            html.classList.add('dark');
         } else {
-            html.classList.remove('dark')
+            html.classList.remove('dark');
         }
-    }, [darkMode])
+    }, [darkMode]);
 
     const isActive = (path: string) =>
         location.pathname === path
             ? 'text-secondary dark:text-secondary-dark border-b-2 border-blue-400'
-            : 'text-text dark:text-text-dark hover:text-primary dark:hover:text-primary-dark'
+            : 'text-text dark:text-text-dark hover:text-primary dark:hover:text-primary-dark';
 
     return (
         <nav className="bg-light-contrast dark:bg-dark-contrast text-text dark:text-text-dark px-6 py-4 shadow flex items-center justify-between">
@@ -48,5 +47,5 @@ export default function Navbar() {
                 </button>
             </div>
         </nav>
-    )
+    );
 }

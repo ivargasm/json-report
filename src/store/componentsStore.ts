@@ -47,6 +47,7 @@ interface ComponentStore {
     reset: () => void
     clearTable: () => void
     clearResume: () => void
+    loadFromJSON: (data: { components?: ReportComponent[] }) => void
 }
 
 export const useComponentsStore = create<ComponentStore>((set) => ({
@@ -115,7 +116,7 @@ export const useComponentsStore = create<ComponentStore>((set) => ({
         },
         resume: undefined,
     })),
-    
+
     clearResume: () =>
         set(() => ({
             resume: undefined,
@@ -134,6 +135,16 @@ export const useComponentsStore = create<ComponentStore>((set) => ({
                 parsedColumns: [],
             },
         })),
+
+    loadFromJSON: (data: { components?: ReportComponent[] }) => {
+        const resume = data.components?.find((c: any) => c.type === 'resume')
+        const table = data.components?.find((c: any) => c.type === 'table')
+        set(() => ({
+            resume,
+            table,
+        }))
+    }
+
 
 
 

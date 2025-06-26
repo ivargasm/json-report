@@ -21,6 +21,8 @@ export interface FiltersStore {
     updateGenericFilter: (filter: GenericFilter) => void
     updateDefaultValue: (selectId: string, value: DefaultValue) => void
     reset: () => void
+    clearFilters: () => void
+    loadFromJSON: (data: { filters?: string[]; generic_filters?: GenericFilter[]; filters_properties?: Record<string, { default_value: DefaultValue }> }) => void
 }
 
 export const useFiltersStore = create<FiltersStore>((set) => ({
@@ -74,9 +76,17 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
 
     clearFilters: () =>
         set(() => ({
-          filters: [],
-          generic_filters: [],
-          filters_properties: {},
+            filters: [],
+            generic_filters: [],
+            filters_properties: {},
         })),
+
+    loadFromJSON: (data: { filters?: string[]; generic_filters?: GenericFilter[]; filters_properties?: Record<string, { default_value: DefaultValue }> }) =>
+        set(() => ({
+            filters: data.filters ?? [],
+            generic_filters: data.generic_filters ?? [],
+            filters_properties: data.filters_properties ?? {},
+        })),
+
 
 }))
