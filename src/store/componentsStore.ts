@@ -39,113 +39,47 @@ export interface ReportComponent {
     parsedColumns?: ParsedColumn[]
 }
 
-interface ComponentStore {
-    table: ReportComponent
-    resume?: ReportComponent
-    setComponent: (comp: ReportComponent) => void
-    setParsedColumns: (type: 'table' | 'resume', columns: ParsedColumn[]) => void
-    reset: () => void
-    clearTable: () => void
-    clearResume: () => void
+interface ComponentsStore {
+    components: ReportComponent[]
+    addComponent: (component: ReportComponent) => void
+    updateComponent: (id: string, updated: Partial<ReportComponent>) => void
+    removeComponent: (id: string) => void
+    setParsedColumns: (id: string, columns: ParsedColumn[]) => void
+    clear: () => void
     loadFromJSON: (data: { components?: ReportComponent[] }) => void
 }
 
-export const useComponentsStore = create<ComponentStore>((set) => ({
-    table: {
-        id: '',
-        type: 'table',
-        title: '',
-        schema: 'project',
-        datasource: '',
-        count_datasource: '',
-        columns: [],
-        parsedColumns: [],
-    },
+export const useComponentsStore = create<ComponentsStore>((set) => ({
+    components: [],
 
-    resume: undefined,
-
-    setComponent: (comp) =>
-        set((state) => {
-            if (comp.type === 'table') return { ...state, table: comp }
-            if (comp.type === 'resume') return { ...state, resume: comp }
-            return state
-        }),
-
-    setParsedColumns: (type, columns) =>
-        set((state) => {
-            if (type === 'table') {
-                return {
-                    ...state,
-                    table: {
-                        ...state.table,
-                        parsedColumns: columns,
-                    },
-                }
-            }
-            if (type === 'resume') {
-                // Si ya existe resume, lo actualizamos; si no, lo creamos
-                const baseResume: ReportComponent = {
-                    id: state.resume?.id || 'resume',
-                    type: 'resume',
-                    title: state.resume?.title || '',
-                    schema: state.resume?.schema || 'project',
-                    datasource: state.resume?.datasource || '',
-                    last_date_datasource:
-                        state.resume?.last_date_datasource || '',
-                    parsedColumns: columns,
-                    rows: state.resume?.rows || [],
-                    column_titles: state.resume?.column_titles || [],
-                }
-                return {
-                    ...state,
-                    resume: baseResume,
-                }
-            }
-            return state
-        }),
-    reset: () => set(() => ({
-        table: {
-            id: '',
-            type: 'table',
-            title: '',
-            schema: 'project',
-            datasource: '',
-            count_datasource: '',
-            columns: [],
-            parsedColumns: [],
-        },
-        resume: undefined,
-    })),
-
-    clearResume: () =>
-        set(() => ({
-            resume: undefined,
+    addComponent: (component) =>
+        set((state) => ({
+            components: [...state.components, component],
         })),
 
-    clearTable: () =>
-        set(() => ({
-            table: {
-                id: '',
-                type: 'table',
-                title: '',
-                schema: 'project',
-                datasource: '',
-                count_datasource: '',
-                columns: [],
-                parsedColumns: [],
-            },
+    updateComponent: (id, updated) =>
+        set((state) => ({
+            components: state.components.map((c) =>
+                c.id === id ? { ...c, ...updated } : c
+            ),
         })),
 
-    loadFromJSON: (data: { components?: ReportComponent[] }) => {
-        const resume = data.components?.find((c: any) => c.type === 'resume')
-        const table = data.components?.find((c: any) => c.type === 'table')
-        set(() => ({
-            resume,
-            table,
-        }))
-    }
+    removeComponent: (id) =>
+        set((state) => ({
+            components: state.components.filter((c) => c.id !== id),
+        })),
 
+    setParsedColumns: (id, columns) =>
+        set((state) => ({
+            components: state.components.map((c) =>
+                c.id === id ? { ...c, parsedColumns: columns } : c
+            ),
+        })),
 
+    clear: () => set({ components: [] }),
 
-
+    loadFromJSON: (data) =>
+        set({
+            components: data.components || [],
+        }),
 }))

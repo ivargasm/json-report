@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useComponentsStore } from '../store/componentsStore'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function FormularioComponenteBase() {
-    const { table, resume, setComponent, setParsedColumns, clearTable, clearResume } = useComponentsStore()
+    const {
+        components,
+        addComponent,
+        updateComponent,
+        setParsedColumns,
+    } = useComponentsStore()
+
     const [form, setForm] = useState({
         id: '',
         title: '',
@@ -14,32 +21,24 @@ export default function FormularioComponenteBase() {
         column_titles: '',
     })
 
-    // 🧠 Cargar el componente actual al seleccionar tipo
+    const [editingId, setEditingId] = useState<string | null>(null)
+
     useEffect(() => {
-        if (form.type === 'resume' && resume) {
-        setForm({
-            id: resume.id,
-            title: resume.title,
-            type: resume.type,
-            schema: resume.schema,
-            datasource: resume.datasource,
-            last_date_datasource: resume.last_date_datasource || '',
-            count_datasource: '',
-            column_titles: resume.column_titles?.join(', ') || '',
-        })
-        } else if (form.type === 'table' && table) {
-        setForm({
-            id: table.id,
-            title: table.title,
-            type: table.type,
-            schema: table.schema,
-            datasource: table.datasource,
-            count_datasource: table.count_datasource || '',
-            last_date_datasource: '',
-            column_titles: '',
-        })
+        if (!editingId) return
+        const existing = components.find((c) => c.id === editingId)
+        if (existing) {
+            setForm({
+                id: existing.id,
+                title: existing.title,
+                type: existing.type,
+                schema: existing.schema,
+                datasource: existing.datasource,
+                count_datasource: existing.count_datasource || '',
+                last_date_datasource: existing.last_date_datasource || '',
+                column_titles: existing.column_titles?.join(', ') || '',
+            })
         }
-    }, [form.type, table, resume])
+    }, [editingId, components])
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -48,11 +47,11 @@ export default function FormularioComponenteBase() {
     }
 
     const handleParseColumns = async () => {
-        if (!form.datasource || !form.type) return
+        if (!form.datasource || !form.type || !form.id) return
 
         try {
-            // const res = await fetch('http://127.0.0.1:8000/columns/parse-columns', {
             const res = await fetch('https://json-report-backend.onrender.com/columns/parse-columns', {
+            // const res = await fetch('http://localhost:8000/columns/parse-columns', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -62,34 +61,24 @@ export default function FormularioComponenteBase() {
             })
             const data = await res.json()
             if (data.columns) {
-                setParsedColumns(form.type as 'resume' | 'table', data.columns)
-                alert('Columnas detectadas correctamente.')
+                setParsedColumns(form.id, data.columns)
+                toast.success('Columnas detectadas correctamente.')
             } else {
-                alert('Error al obtener columnas.')
+                toast.error('No se pudieron obtener las columnas. Por favor, retira los placeholders del query y vuelve a intentar. Luego puedes volver a cargar el query completo con placeholders.')
             }
         } catch (err) {
             console.error(err)
-            alert('Ocurrió un error al conectar con el backend.')
+            toast.error('Ocurrió un error al conectar con el backend.')
         }
     }
 
     const handleAdd = () => {
         if (!form.id || !form.datasource) {
-            alert('ID y datasource son obligatorios.')
+            toast.error('ID y datasource son obligatorios.')
             return
         }
 
-        if (form.type === 'resume' && resume) {
-            alert('Ya existe un componente de tipo resumen.')
-            return
-        }
-
-        if (form.type === 'table' && table?.datasource) {
-            alert('Ya existe un componente de tipo tabla.')
-            return
-        }
-
-        const baseProps = {
+        const base: any = {
             id: form.id,
             type: form.type as 'resume' | 'table',
             title: form.title,
@@ -98,62 +87,82 @@ export default function FormularioComponenteBase() {
             parsedColumns: [],
         }
 
-        const component =
-            form.type === 'resume'
-                ? {
-                    ...baseProps,
-                    last_date_datasource: form.last_date_datasource || '',
-                    column_titles: form.column_titles
-                        ? form.column_titles.split(',').map((t) => t.trim())
-                        : [],
-                    rows: [],
-                }
-                : {
-                    ...baseProps,
-                    count_datasource: form.count_datasource || '',
-                    columns: [],
-                }
+        if (form.type === 'resume') {
+            addComponent({
+                ...base,
+                last_date_datasource: form.last_date_datasource || '',
+                column_titles: form.column_titles.split(',').map((s) => s.trim()),
+                rows: [],
+            })
+        } else {
+            addComponent({
+                ...base,
+                count_datasource: form.count_datasource || '',
+                columns: [],
+            })
+        }
 
-        setComponent(component)
-        alert(`Componente "${form.type}" agregado.`)
+        toast.success('Componente agregado.')
+        handleClear()
     }
 
     const handleUpdate = () => {
-        const baseProps = {
-          id: form.id,
-          type: form.type as 'resume' | 'table',
-          title: form.title,
-          schema: form.schema as 'project' | 'stoiii' | 'stoiii_config',
-          datasource: form.datasource,
-          parsedColumns: [],
+        const updates: any = {
+            title: form.title,
+            schema: form.schema,
+            datasource: form.datasource,
         }
-      
-        const component =
-          form.type === 'resume'
-            ? {
-                ...baseProps,
-                last_date_datasource: form.last_date_datasource || '',
-                column_titles: form.column_titles
-                  ? form.column_titles.split(',').map((t) => t.trim())
-                  : [],
-                rows: resume?.rows ?? [],
-              }
-            : {
-                ...baseProps,
-                count_datasource: form.count_datasource || '',
-                columns: table?.columns ?? [],
-              }
-      
-        setComponent(component)
-        alert(`Componente "${form.type}" actualizado.`)
-      }
 
+        if (form.type === 'resume') {
+            updates.last_date_datasource = form.last_date_datasource || ''
+            updates.column_titles = form.column_titles
+                ? form.column_titles.split(',').map((t) => t.trim())
+                : []
+        } else {
+            updates.count_datasource = form.count_datasource || ''
+        }
+
+        updateComponent(form.id, updates)
+        toast.success('Componente actualizado.')
+    }
+
+    const handleClear = () => {
+        setForm({
+            id: '',
+            title: '',
+            type: 'resume',
+            schema: 'project',
+            datasource: '',
+            count_datasource: '',
+            last_date_datasource: '',
+            column_titles: '',
+        })
+        setEditingId(null)
+    }
 
     const isResume = form.type === 'resume'
+    const exists = !!editingId
 
     return (
         <div className="p-6 bg-light-contrast dark:bg-dark-contrast rounded-lg shadow text-text dark:text-text-dark space-y-6 mt-6">
-            <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">4. Agregar componente</h2>
+            <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+            <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">4. Configurar componente</h2>
+
+            {/* Listado de componentes existentes */}
+            {components.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                    {components.map((c) => (
+                        <button
+                            key={c.id}
+                            onClick={() => setEditingId(c.id)}
+                            className={`px-3 py-1 rounded-full border text-sm transition cursor-pointer
+                                ${editingId === c.id ? 'bg-blue-700 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'}`}
+                        >
+                            {c.id} ({c.type})
+                        </button>
+                    ))}
+                </div>
+            )}
 
             <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -185,16 +194,10 @@ export default function FormularioComponenteBase() {
                         value={form.type}
                         onChange={handleChange}
                         className="bg-[#2b2b3d] border border-gray-600 p-2 rounded w-full"
-                        >
-                        <option value="resume">
-                            Resumen {resume ? '✅' : ''}
-                        </option>
-                        <option value="table">
-                            Tabla {table?.datasource ? '✅' : ''}
-                        </option>
-
+                    >
+                        <option value="resume">Resumen</option>
+                        <option value="table">Tabla</option>
                     </select>
-
                 </div>
 
                 <div>
@@ -234,11 +237,8 @@ export default function FormularioComponenteBase() {
                             className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded w-full"
                         />
                     </div>
-
                     <div>
-                        <label className="block text-sm mb-1">
-                            Column titles (separados por coma)
-                        </label>
+                        <label className="block text-sm mb-1">Column titles (separados por coma)</label>
                         <input
                             name="column_titles"
                             value={form.column_titles}
@@ -260,59 +260,37 @@ export default function FormularioComponenteBase() {
                 </div>
             )}
 
-            <div className="flex space-x-4 pt-4">
-            {(form.type === 'resume' && resume) ||
-                (form.type === 'table' && table?.datasource) ? (
-                <button
-                    onClick={handleUpdate}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
-                >
-                    Actualizar componente
-                </button>
+            <div className="flex flex-wrap gap-4 pt-4">
+                {exists ? (
+                    <button
+                        onClick={handleUpdate}
+                        className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
+                    >
+                        Actualizar componente
+                    </button>
                 ) : (
-                <button
-                    onClick={handleAdd}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                >
-                    Agregar componente
-                </button>
-            )}
+                    <button
+                        onClick={handleAdd}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                    >
+                        Agregar nuevo componente
+                    </button>
+                )}
 
                 <button
                     onClick={handleParseColumns}
-                    disabled={
-                        (form.type === 'resume' && !resume) ||
-                        (form.type === 'table' && !table?.datasource)
-                    }
-                    className={`px-4 py-2 rounded ${(form.type === 'resume' && !resume) || (form.type === 'table' && !table?.datasource)
-                        ? 'bg-blue-800 cursor-not-allowed'
-                        : 'bg-blue-600 hover:bg-blue-700'
-                        } text-white`}
+                    disabled={!form.id}
+                    className={`px-4 py-2 rounded ${!form.id ? 'bg-blue-800 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
                 >
                     Obtener columnas
                 </button>
 
                 <button
-                    onClick={() => {
-                        if (form.type === 'resume') clearResume()
-                        else if (form.type === 'table') clearTable()
-                        setForm({
-                        id: '',
-                        title: '',
-                        type: 'resume',
-                        schema: 'project',
-                        datasource: '',
-                        count_datasource: '',
-                        last_date_datasource: '',
-                        column_titles: '',
-                        })
-                    }}
+                    onClick={handleClear}
                     className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded"
-                    >
+                >
                     Limpiar formulario
                 </button>
-
-
             </div>
         </div>
     )

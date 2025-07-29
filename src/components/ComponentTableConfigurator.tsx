@@ -1,16 +1,18 @@
 import { useComponentsStore } from '../store/componentsStore'
-import React from 'react'
+import type { TableColumn } from '../store/componentsStore'
 import { useEffect } from 'react'
 
-export default function ComponentTableConfigurator() {
-  const {
-    table,
-    setComponent,
-  } = useComponentsStore()
+export default function ComponentTableConfigurator({
+  componentId,
+}: {
+  componentId: string
+}) {
+  const { components, updateComponent } = useComponentsStore()
 
-  // Inicializar columnas editables a partir de parsedColumns
+  const table = components.find((c) => c.id === componentId && c.type === 'table')
+
   useEffect(() => {
-    if (table.parsedColumns && table.parsedColumns.length && table.columns?.length === 0) {
+    if (table && table.parsedColumns && table.parsedColumns.length && (!table.columns || table.columns.length === 0)) {
       const editableColumns = table.parsedColumns.map((col) => ({
         ...col,
         is_number: false,
@@ -18,27 +20,26 @@ export default function ComponentTableConfigurator() {
         is_percent: false,
         is_image: false,
       }))
-      setComponent({
-        ...table,
-        columns: editableColumns,
-      })
+      updateComponent(table.id, { columns: editableColumns })
     }
-  }, [table.parsedColumns])
+  }, [table?.parsedColumns])
 
-  const updateColumn = (index: number, changes: Partial<NonNullable<typeof table.columns>[number]>) => {
-    if (!table.columns) return; // Guard clause if columns is undefined
-    
+  const updateColumn = (index: number, changes: Partial<TableColumn>) => {
+    if (!table?.columns) return
+
     const updated = table.columns.map((col, i) =>
       i === index ? { ...col, ...changes } : col
     )
-    setComponent({ ...table, columns: updated })
+    updateComponent(table.id, { columns: updated })
   }
 
-  if (!table.columns?.length) return null
+  if (!table?.columns?.length) return null
 
   return (
     <div className="p-6 bg-light-contrast dark:bg-dark-contrast text-text dark:text-text-dark rounded shadow mt-6 space-y-6">
-      <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">5. Configurar columnas de tabla</h2>
+      <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">
+        Configurar columnas de tabla ({table.title})
+      </h2>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">

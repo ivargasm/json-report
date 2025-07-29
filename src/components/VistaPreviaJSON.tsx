@@ -1,59 +1,52 @@
 import { useFiltersStore } from '../store/filtersStore'
-import { ReportComponent, useComponentsStore } from '../store/componentsStore'
+import { useComponentsStore, ReportComponent } from '../store/componentsStore'
 import { useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 
-// Función para limpiar los saltos de línea en los queries SQL
+// Limpia saltos de línea y múltiples espacios
 const cleanQuery = (query: string | undefined): string => {
     if (!query) return ''
-    // Reemplazar múltiples espacios en blanco y saltos de línea por un solo espacio
     return query.replace(/\s+/g, ' ').trim()
 }
 
-// Función para limpiar los queries en un componente
-const cleanComponentQueries = (comp: any): any => {
-    if (!comp) return comp
-    
-    // Hacer una copia profunda para no modificar el estado original
+// Limpia campos tipo query dentro del componente
+const cleanComponentQueries = (comp: ReportComponent): ReportComponent => {
     const cleaned = JSON.parse(JSON.stringify(comp))
-    
-    // Limpiar los queries en las propiedades conocidas
+
     if (cleaned.datasource) cleaned.datasource = cleanQuery(cleaned.datasource)
     if (cleaned.count_datasource) cleaned.count_datasource = cleanQuery(cleaned.count_datasource)
     if (cleaned.last_date_datasource) cleaned.last_date_datasource = cleanQuery(cleaned.last_date_datasource)
-    
+
     return cleaned
+}
+
+// Limpia filtros genéricos (si aplica)
+const cleanGenericFilters = (filters: any[]) => {
+    return filters.map(filter => ({
+        ...filter,
+        datasource: cleanQuery(filter.datasource),
+        count_datasource: cleanQuery(filter.count_datasource)
+    }))
 }
 
 export default function VistaPreviaJSON() {
     const { filters, generic_filters, filters_properties } = useFiltersStore()
-    const { table, resume } = useComponentsStore()
+    const { components } = useComponentsStore()
+
     const [copied, setCopied] = useState(false)
     const [copiedMinified, setCopiedMinified] = useState(false)
 
+    // Eliminar `parsedColumns` antes de exportar
     const cleanComponent = (comp: ReportComponent): ReportComponent => {
         const { parsedColumns, ...rest } = comp
         return rest
     }
 
-    // Función para limpiar los queries en los filtros genéricos
-    const cleanGenericFilters = (filters: any[]) => {
-        return filters.map(filter => ({
-            ...filter,
-            datasource: cleanQuery(filter.datasource),
-            count_datasource: cleanQuery(filter.count_datasource)
-        }))
-    }
-
-    // Crear el objeto JSON final con los queries limpiados
     const jsonFinal = {
         filters,
-        ...(generic_filters.length > 0 && { 
-            generic_filters: cleanGenericFilters(generic_filters) 
-        }),
+        ...(generic_filters.length > 0 && { generic_filters: cleanGenericFilters(generic_filters) }),
         ...(Object.keys(filters_properties).length > 0 && { filters_properties }),
-        components: [resume, table]
-            .filter((comp): comp is ReportComponent => !!comp)
-            .map(comp => cleanComponentQueries(cleanComponent(comp))),
+        components: components.map(comp => cleanComponentQueries(cleanComponent(comp))),
     }
 
     const jsonString = JSON.stringify(jsonFinal, null, 2)
@@ -65,7 +58,7 @@ export default function VistaPreviaJSON() {
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
         } catch (err) {
-            alert('Error al copiar')
+            toast.error('Error al copiar')
         }
     }
 
@@ -75,7 +68,7 @@ export default function VistaPreviaJSON() {
             setCopiedMinified(true)
             setTimeout(() => setCopiedMinified(false), 2000)
         } catch (err) {
-            alert('Error al copiar el JSON minificado')
+            toast.error('Error al copiar el JSON minificado')
         }
     }
 
@@ -91,6 +84,7 @@ export default function VistaPreviaJSON() {
 
     return (
         <div className="p-6 bg-light-contrast dark:bg-dark-contrast text-text dark:text-text-dark rounded shadow mt-6 space-y-4">
+            <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
             <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">7. Vista previa del JSON</h2>
 
             <pre className="bg-light-check dark:bg-dark-check border border-gray-600 rounded p-4 overflow-x-auto max-h-[500px] text-sm">
