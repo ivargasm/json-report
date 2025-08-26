@@ -30,8 +30,11 @@ export default function Navbar() {
                 <Link to="/" className={isActive('/')}>
                     Inicio
                 </Link>
-                <Link to="/configurar-reporte" className={isActive('/configurar-reporte')}>
-                    Configurar
+                <Link to="/mobile-report" className={isActive('/mobile-report')}>
+                    Mobile Report
+                </Link>
+                <Link to="/preset-report" className={isActive('/preset-report')}>
+                    Preset Report
                 </Link>
 
                 <button

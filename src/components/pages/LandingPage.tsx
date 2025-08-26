@@ -11,12 +11,20 @@ export default function LandingPage() {
             <section className="text-center py-20 px-4">
                 <h1 className="text-5xl font-bold mb-4">Crea Reportes Dinámicos con Facilidad</h1>
                 <p className="text-xl mb-8">Transforma tus datos en reportes JSON configurables de manera visual e intuitiva.</p>
-                <button
-                    onClick={() => navigate('/configurar-reporte')}
-                    className="cursor-pointer bg-btn hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-btn-dark"
-                >
-                    Empezar a Configurar
-                </button>
+                <div className="flex gap-4 justify-center">
+                    <button
+                        onClick={() => navigate('/mobile-report')}
+                        className="cursor-pointer bg-btn hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-btn-dark"
+                    >
+                        Reporte Móvil
+                    </button>
+                    <button
+                        onClick={() => navigate('/preset-report')}
+                        className="cursor-pointer bg-secondary hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-secondary-dark"
+                    >
+                        Reporte Preset
+                    </button>
+                </div>
             </section>
 
             {/* Features Section */}
@@ -73,12 +81,20 @@ export default function LandingPage() {
             <section className="py-20 bg-light-contrast dark:bg-dark-contrast text-center">
                 <h2 className="text-3xl font-bold mb-4">¿Listo para empezar?</h2>
                 <p className="text-xl mb-8">Crea tu primer reporte JSON en minutos.</p>
-                <button
-                    onClick={() => navigate('/configurar-reporte')}
-                    className="cursor-pointer bg-secondary hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-secondary-dark"
-                >
-                    Ir al Configurador
-                </button>
+                <div className="flex gap-4 justify-center">
+                    <button
+                        onClick={() => navigate('/mobile-report')}
+                        className="cursor-pointer bg-btn hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-btn-dark"
+                    >
+                        Configurador Móvil
+                    </button>
+                    <button
+                        onClick={() => navigate('/preset-report')}
+                        className="cursor-pointer bg-secondary hover:opacity-90 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 dark:bg-secondary-dark"
+                    >
+                        Configurador Preset
+                    </button>
+                </div>
             </section>
         </div>
     );

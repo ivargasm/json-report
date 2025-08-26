@@ -40,8 +40,26 @@ Esta aplicación permite crear y configurar la estructura JSON necesaria para la
 
 ## Estructura del Proyecto
 
-- `/src/components`: Componentes principales de la aplicación
-- `/src/store`: Gestión de estado con Zustand
-- `/public`: Archivos estáticos
+```
+src/
+├── components/           # Componentes organizados por categoría
+│   ├── ui/              # Componentes de interfaz reutilizables
+│   ├── pages/           # Componentes de páginas principales
+│   ├── forms/           # Componentes de formularios
+│   ├── configurators/   # Componentes configuradores específicos
+│   └── index.ts         # Exportaciones centralizadas
+├── store/               # Gestión de estado con Zustand
+├── types/               # Definiciones de tipos TypeScript organizadas
+│   ├── common.ts        # Tipos comunes
+│   ├── components.ts    # Tipos de componentes
+│   ├── filters.ts       # Tipos de filtros
+│   ├── stores.ts        # Tipos de stores
+│   └── index.ts         # Re-exportaciones
+├── constants/           # Constantes de la aplicación
+├── config/              # Configuración centralizada
+├── utils/               # Funciones utilitarias
+├── hooks/               # Hooks personalizados
+└── assets/              # Recursos estáticos
+```
 
 

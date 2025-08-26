@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import LandingPage from './components/LandingPage';
-import ReporteConfigPage from './components/ReporteConfigPage';
+import { Navbar, LandingPage, ReporteConfigPage, ReportePresetConfig } from './components';
 import './App.css';
 
 function App() {
@@ -10,7 +8,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/configurar-reporte" element={<ReporteConfigPage />} />
+        <Route path="/mobile-report" element={<ReporteConfigPage />} />
+        <Route path="/preset-report" element={<ReportePresetConfig />} />
       </Routes>
     </Router>
   );

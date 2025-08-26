@@ -1,4 +1,4 @@
-import { useComponentsStore } from '../store/componentsStore'
+import { useComponentsStore } from '../../store/componentsStore'
 import { useState, useMemo } from 'react'
 
 const columnFlags = ['is_number', 'is_amount', 'is_percent', 'is_image'] as const

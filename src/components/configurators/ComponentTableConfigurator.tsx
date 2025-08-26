@@ -1,5 +1,5 @@
-import { useComponentsStore } from '../store/componentsStore'
-import type { TableColumn } from '../store/componentsStore'
+import { useComponentsStore } from '../../store/componentsStore'
+import type { TableColumn } from '../../types'
 import { useEffect } from 'react'
 
 export default function ComponentTableConfigurator({

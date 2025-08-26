@@ -1,13 +1,14 @@
-import FilterSelector from './FilterSelector'
-import GenericFiltersForm from './GenericFiltersForm'
-import DefaultFilterProperties from './DefaultFilterProperties'
-import FormularioComponenteBase from './FormularioComponenteBase'
-import ComponentTableConfigurator from './ComponentTableConfigurator'
-import ComponentResumeConfigurator from './ComponentResumeConfigurator'
-import VistaPreviaJSON from './VistaPreviaJSON'
+import { 
+    FilterSelector, 
+    GenericFiltersForm, 
+    DefaultFilterProperties, 
+    FormularioComponenteBase 
+} from '../forms';
+import { ComponentTableConfigurator, ComponentResumeConfigurator } from '../configurators';
+import { VistaPreviaJSON } from '../ui';
 import React from 'react'
-import { useComponentsStore } from '../store/componentsStore'
-import { useFiltersStore } from '../store/filtersStore'
+import { useComponentsStore } from '../../store/componentsStore'
+import { useFiltersStore } from '../../store/filtersStore'
 import toast, { Toaster } from 'react-hot-toast'
 
 export default function ReporteConfigPage() {

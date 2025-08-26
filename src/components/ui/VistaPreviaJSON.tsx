@@ -1,5 +1,6 @@
-import { useFiltersStore } from '../store/filtersStore'
-import { useComponentsStore, ReportComponent } from '../store/componentsStore'
+import { useFiltersStore } from '../../store/filtersStore'
+import { useComponentsStore } from '../../store/componentsStore'
+import type { ReportComponent } from '../../types'
 import { useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 

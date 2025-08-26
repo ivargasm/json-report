@@ -1,29 +1,5 @@
-import { create } from 'zustand'
-
-export interface GenericFilter {
-    selectId: string
-    schema: 'project' | 'stoiii' | 'stoiii_config'
-    datasource: string
-    count_datasource: string
-}
-
-export interface DefaultValue {
-    value: string
-    description: string
-}
-
-export interface FiltersStore {
-    filters: string[]
-    generic_filters: GenericFilter[]
-    filters_properties: Record<string, { default_value: DefaultValue }>
-    addFilter: (filter: string) => void
-    removeFilter: (filter: string) => void
-    updateGenericFilter: (filter: GenericFilter) => void
-    updateDefaultValue: (selectId: string, value: DefaultValue) => void
-    reset: () => void
-    clearFilters: () => void
-    loadFromJSON: (data: { filters?: string[]; generic_filters?: GenericFilter[]; filters_properties?: Record<string, { default_value: DefaultValue }> }) => void
-}
+import { create } from 'zustand';
+import type { FiltersStore } from '../types';
 
 export const useFiltersStore = create<FiltersStore>((set) => ({
     filters: [],
@@ -81,7 +57,7 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
             filters_properties: {},
         })),
 
-    loadFromJSON: (data: { filters?: string[]; generic_filters?: GenericFilter[]; filters_properties?: Record<string, { default_value: DefaultValue }> }) =>
+    loadFromJSON: (data) =>
         set(() => ({
             filters: data.filters ?? [],
             generic_filters: data.generic_filters ?? [],

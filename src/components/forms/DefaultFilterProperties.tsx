@@ -1,5 +1,4 @@
-import { useFiltersStore } from '../store/filtersStore'
-import React from 'react'
+import { useFiltersStore } from '../../store/filtersStore'
 
 export default function DefaultFilterProperties() {
   const {

@@ -1,5 +1,4 @@
-import React from 'react'
-import { useFiltersStore } from '../store/filtersStore'
+import { useFiltersStore } from '../../store/filtersStore'
 import { useEffect } from 'react'
 
 const schemaOptions = ['project', 'stoiii', 'stoiii_config']

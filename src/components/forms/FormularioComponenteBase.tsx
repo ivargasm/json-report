@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useComponentsStore } from '../store/componentsStore'
+import { useComponentsStore } from '../../store/componentsStore'
+import { API_CONFIG } from '../../config'
 import toast, { Toaster } from 'react-hot-toast'
 
 export default function FormularioComponenteBase() {
@@ -50,8 +51,7 @@ export default function FormularioComponenteBase() {
         if (!form.datasource || !form.type || !form.id) return
 
         try {
-            const res = await fetch('https://json-report-backend.onrender.com/columns/parse-columns', {
-            // const res = await fetch('http://localhost:8000/columns/parse-columns', {
+            const res = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MOBILE}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
