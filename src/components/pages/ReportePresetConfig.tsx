@@ -19,6 +19,24 @@ export default function ReportePresetConfig() {
     // Obtenemos todo el store de Zustand
     const store = useConfigStore();
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const content = e.target?.result as string;
+                    const jsonData = JSON.parse(content);
+                    store.loadPresetConfig(jsonData);
+                } catch (error) {
+                    alert('Error al leer o procesar el archivo JSON.');
+                    console.error("Error parsing JSON file:", error);
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
@@ -45,6 +63,16 @@ export default function ReportePresetConfig() {
                 </header>
 
                 <main className="grid grid-cols-1 gap-8">
+                    {/* --- Sección 0: Cargar Configuración --- */}
+                    <Section title="Cargar Configuración Existente (Opcional)">
+                        <div className="flex items-center space-x-4">
+                            <label htmlFor="file-upload" className="cursor-pointer inline-flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-btn dark:bg-btn-dark hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Cargar JSON
+                            </label>
+                            <input id="file-upload" type="file" className="hidden" accept=".json" onChange={handleFileChange} />
+                            <p className="text-sm text-text dark:text-text-dark">Sube un archivo `config.json` para editar una configuración existente.</p>
+                        </div>
+                    </Section>
                     {/* --- Sección 1: Entradas Principales --- */}
                     <Section title="1. Entradas Principales">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -189,5 +189,59 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
             generatedJsonMinified: JSON.stringify(finalJson),
             generatedSql: `${sqlInserts}${sqlValues.slice(0, -2)};`
         });
+    },
+
+    loadPresetConfig: (config) => {
+        if (!config || !config.columns || config.columns.length === 0) {
+            console.error("El JSON cargado es inválido o no contiene columnas.");
+            return;
+        }
+
+        // 1. Inferir jsonType
+        const jsonType = config.columns[0].agg ? 'groupBy' : 'normal';
+
+        // 2. Extraer metadatos del nombre de la primera columna
+        const nameParts = config.columns[0].name.split('.');
+        const reportName = nameParts[3] || 'report';
+        const configType = (nameParts[4] || 'adhoc') as 'adhoc' | 'preset';
+        const projectName = nameParts[5] || 'project';
+
+        // 3. Transformar columnas
+        const columns: Column[] = config.columns.map((col: any) => ({
+            originalName: col.name.split('.').pop() || '',
+            name: col.name,
+            dataType: col.dataType,
+            customMessage: '', // No se guarda en el JSON, se resetea
+            select: col.select,
+            alias: col.alias,
+            agg: col.agg,
+        }));
+
+        // 4. Transformar variables
+        const selectedVariables = config.variables.reduce((acc: Record<string, string>, v: any) => {
+            // Extraer alias de sql_include (ej: "v.visit_date...")
+            const alias = v.sql_include.split('.')[0] || 'v';
+            acc[v.var] = alias;
+            return acc;
+        }, {});
+
+        // 5. Actualizar el estado
+        set({
+            jsonType,
+            reportName,
+            configType,
+            projectName,
+            mainSql: config.sql,
+            columns,
+            selectedVariables,
+            selectedDatasetType: config.type.id,
+            preQueries: config.preQuery ? config.preQuery.join('; ') : '',
+            postQueries: config.postQuery ? config.postQuery.join('; ') : '',
+            // Limpiar los resultados generados para evitar inconsistencias
+            generatedJson: '',
+            generatedJsonMinified: '',
+            generatedSql: '',
+            analysisError: null,
+        });
     }
 }));

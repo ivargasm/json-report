@@ -39,6 +39,7 @@ export interface ConfigState {
     setSelectedDatasetType: (id: number) => void;
     analyzeSql: () => Promise<void>;
     generateOutputs: () => void;
+    loadPresetConfig: (config: any) => void;
 }
 
 // Components Store Types
