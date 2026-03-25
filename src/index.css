@@ -3,47 +3,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --color-bg: #fcfcfc;
-    --color-bg-dark: #20252c;
-    --color-text: #202225;
-    --color-text-dark: #fcfcfc;
+    --color-bg: #e9eff7;
+    /* slate-50 */
+    --color-bg-dark: #1b2027;
+    /* zinc-950 */
 
-    --color-primary: #0088cc;
-    /* Azul */
-    --color-primary-dark: #73cffa;
+    --color-text: #18181b;
+    /* zinc-900 */
+    --color-text-dark: #fafafa;
+    /* zinc-50 */
 
-    --color-secondary: #10b981;
-    /* Verde */
-    --color-secondary-dark: #34d399;
+    --color-primary: #3b82f6;
+    /* blue-500 */
+    --color-primary-dark: #818cf8;
+    /* indigo-400 */
 
-    --color-accent: #e7562e;
-    /* Amarillo */
-    --color-accent-dark: #e7762e;
+    --color-secondary: #0ea5e9;
+    /* sky-500 */
+    --color-secondary-dark: #38bdf8;
+    /* sky-400 */
 
-    --color-btn: #0099ff;
-    --color-btn-dark: #0087ff;
+    --color-accent: #6366f1;
+    /* indigo-500 */
+    --color-accent-dark: #818cf8;
+    /* indigo-400 */
 
-    --color-light-contrast: #f7f7f7;
-    --color-dark-contrast: #202b38;
+    --color-btn: #3b82f6;
+    /* blue-500 */
+    --color-btn-dark: #4f46e5;
+    /* indigo-600 */
 
-    /* colores para los checkbox */
-    --color-dark-check: #35485e;
-    --color-light-check: #efece6;
+    --color-light-contrast: #ffffff;
+    /* white */
+    --color-dark-contrast: #0a0f15;
+    /* deep violet-slate */
 
-    --gradient-primary: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
-    --gradient-link: linear-gradient(45deg, var(--color-dark-link), var(--color-light-link));
+    --color-light-check: #f1f5f9;
+    /* slate-100 */
+    /* colores para los checkbox e inputs inactivos */
+    --color-dark-check: #262c45;
+    /* violet-slate lighter */
+
+    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    --gradient-link: linear-gradient(135deg, var(--color-primary-dark), var(--color-accent-dark));
 }
 
 @layer components {
     .input {
-        @apply w-full px-4 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
+        @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm;
     }
 
     .btn {
-        @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium transition;
+        @apply inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-medium transition-all;
     }
 
     .btn-primary {
-        @apply bg-blue-600 text-white hover:bg-blue-700;
+        @apply bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-500/20 active:scale-[0.98];
     }
 }

@@ -23,9 +23,9 @@ export interface ResumeRow {
 
 export interface ReportComponent {
     id: string;
-    type: 'resume' | 'table';
+    type: 'resume' | 'table' | 'basic_card' | 'progress_bar' | 'basic_tree' | 'graph_bar' | 'graph_pie' | 'graph_doughnut' | 'graph_line' | 'graph_mixed';
     title: string;
-    schema: 'project' | 'stoiii' | 'stoiii_config';
+    schema: string;
     datasource: string;
     count_datasource?: string;
     last_date_datasource?: string;
@@ -33,4 +33,14 @@ export interface ReportComponent {
     rows?: ResumeRow[];
     columns?: TableColumn[];
     parsedColumns?: ParsedColumn[];
+    descriptions?: string[];
+    tree?: any;
+    treeColumns?: any[];
+    random_colors?: string;
+    datasource_alert?: string;
+    alert?: {
+        schema?: string;
+        type?: string;
+        message?: string;
+    };
 }

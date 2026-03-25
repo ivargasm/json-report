@@ -74,8 +74,8 @@ export default function ComponentResumeConfigurator({
   }
 
   return (
-    <div className="p-6 bg-light-contrast dark:bg-dark-contrast text-text dark:text-text-dark rounded shadow mt-6 space-y-6">
-      <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">
+    <div className="p-6 bg-light-contrast dark:bg-dark-contrast border border-gray-200 dark:border-dark-check text-text dark:text-text-dark rounded shadow mt-6 space-y-6">
+      <h2 className="text-xl font-semibold text-text dark:text-text-dark">
         Configurar filas del resumen ({resume.title})
       </h2>
 
@@ -84,12 +84,12 @@ export default function ComponentResumeConfigurator({
           type="text"
           value={newRowDescription}
           onChange={(e) => setNewRowDescription(e.target.value)}
-          className="bg-light-check dark:bg-dark-check border border-gray-600 p-2 rounded flex-1"
+          className="bg-bg dark:bg-bg-dark border border-gray-200 dark:border-dark-check p-2 rounded flex-1"
           placeholder="Descripción de la fila"
         />
         <button
           onClick={handleAddRow}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          className="bg-primary hover:bg-blue-700 shadow-sm font-semibold text-white px-4 py-2 rounded"
         >
           Agregar fila
         </button>
@@ -98,7 +98,7 @@ export default function ComponentResumeConfigurator({
       {(resume.rows ?? []).map((row, rowIdx) => (
         <div
           key={`${row.description}-${rowIdx}`}
-          className="bg-light-contrast dark:bg-dark-contrast p-4 rounded border border-gray-700 space-y-4"
+          className="bg-light-contrast dark:bg-dark-contrast dark:border-dark-check p-4 rounded border border-gray-700 space-y-4"
         >
           <div>
             <label className="block text-sm mb-1">Descripción de la fila</label>
@@ -106,7 +106,7 @@ export default function ComponentResumeConfigurator({
               type="text"
               value={row.description}
               onChange={(e) => updateRowDescription(rowIdx, e.target.value)}
-              className="bg-light-check dark:bg-dark-check border border-gray-600 px-3 py-2 rounded w-full"
+              className="bg-bg dark:bg-bg-dark border border-gray-200 dark:border-dark-check px-3 py-2 rounded w-full"
             />
           </div>
 
@@ -119,8 +119,8 @@ export default function ComponentResumeConfigurator({
                   onClick={() => toggleColumnInRow(rowIdx, col.column)}
                   className={`cursor-pointer px-2 py-1.5 rounded text-md text-center font-medium transition border whitespace-nowrap overflow-hidden text-ellipsis
                     ${sel
-                      ? 'bg-blue-600 border-blue-400 text-white'
-                      : 'bg-[#33334d] border-gray-600 hover:bg-[#3e3e5e]'}`}
+                      ? 'bg-primary border-blue-400 text-white'
+                      : 'bg-[#33334d] border-gray-200 dark:border-dark-check hover:bg-[#3e3e5e]'}`}
                   title={col.column}
                 >
                   {col.column}
@@ -143,7 +143,7 @@ export default function ComponentResumeConfigurator({
                         onClick={() => toggleFlag(rowIdx, col.column, flag)}
                         className={`cursor-pointer px-2 py-1 rounded text-xs font-medium transition border
                           ${col[flag]
-                            ? 'bg-green-600 border-green-400 text-white'
+                            ? 'bg-primary font-medium border-green-400 text-white'
                             : 'bg-[#3e3e5e] border-gray-500 text-gray-300'}`}
                       >
                         {flag.replace('is_', '').toUpperCase()}

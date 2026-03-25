@@ -36,8 +36,8 @@ export default function ComponentTableConfigurator({
   if (!table?.columns?.length) return null
 
   return (
-    <div className="p-6 bg-light-contrast dark:bg-dark-contrast text-text dark:text-text-dark rounded shadow mt-6 space-y-6">
-      <h2 className="text-xl font-semibold text-secondary dark:text-secondary-dark">
+    <div className="p-6 bg-light-contrast dark:bg-dark-contrast border border-gray-200 dark:border-dark-check text-text dark:text-text-dark rounded shadow mt-6 space-y-6">
+      <h2 className="text-xl font-semibold text-text dark:text-text-dark">
         Configurar columnas de tabla ({table.title})
       </h2>
 
@@ -63,7 +63,7 @@ export default function ComponentTableConfigurator({
                     onChange={(e) =>
                       updateColumn(i, { description: e.target.value })
                     }
-                    className="bg-light-check dark:bg-dark-check border border-gray-600 px-2 py-1 rounded w-full"
+                    className="bg-bg dark:bg-bg-dark border border-gray-200 dark:border-dark-check px-2 py-1 rounded w-full"
                   />
                 </td>
                 <td className="py-2 px-4 text-center">
